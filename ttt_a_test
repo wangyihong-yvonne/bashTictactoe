@@ -1,0 +1,269 @@
+#!/bin/bash
+
+# @file ttt_a_test
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# Tests the array representation of the board
+#
+# Markers: X: x marker, O: o marker, _: no marker
+#
+# @date Sept 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_a"
+source "$dir/unit_test"
+
+
+##
+#  Play a game of tic-tac-toe where player X wins.
+#
+test_X_win() {
+	declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	# sol=( _ _ _ _ _ _ _ _ _ )
+	sol=( 1 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O first move to position 9
+	markBoard O 9 tttBoard
+	sol=( X 2 3 4 5 6 7 8 O )
+	assertArrayEqual tttBoard sol
+
+    ### Additional tests here  for X winning game
+
+	# X second move to position 9
+	markBoard X 9 tttBoard 
+	#should be failed, beacuse this position has already be O
+	sol=( X 2 3 4 5 6 7 8 O )
+	assertArrayEqual tttBoard sol
+	
+	# X second move to position 2
+	markBoard X 2 tttBoard
+	sol=( X X 3 4 5 6 7 8 O )
+	assertArrayEqual tttBoard sol
+
+	# O second move to position 5
+	markBoard O 5 tttBoard
+	sol=( X X 3 4 O 6 7 8 O )
+	assertArrayEqual tttBoard sol
+
+	# X third move to position 3
+	markBoard X 3 tttBoard
+	sol=( X X X 4 O 6 7 8 O )
+	assertArrayEqual tttBoard sol
+
+    	# X has won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    	# O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+}
+
+
+##
+#  Play a game of tic-tac-toe where player O wins.
+#
+test_O_win() {
+	### tests here  for O winning game
+    declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( 1 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O first move to position 9
+	markBoard O 9 tttBoard
+	sol=( X 2 3 4 5 6 7 8 O )
+	assertArrayEqual tttBoard sol
+    
+	# X second move to position 2
+	markBoard X 2 tttBoard
+	sol=( X X 3 4 5 6 7 8 O )
+	assertArrayEqual tttBoard sol
+
+	# O second move to position 8
+	markBoard O 8 tttBoard
+	sol=( X X 3 4 5 6 7 O O )
+	assertArrayEqual tttBoard sol
+
+	# X third move to position 5
+	markBoard X 5 tttBoard
+	sol=( X X 3 4 X 6 7 O O )
+	assertArrayEqual tttBoard sol
+
+	# O third move to position 7
+	markBoard O 7 tttBoard
+	sol=( X X 3 4 X 6 O O O )
+	assertArrayEqual tttBoard sol
+
+    # X has not won
+	hasWon X tttBoard
+	assertStatusFailure
+
+    # O has won
+	hasWon O tttBoard
+	assertStatusSuccess
+}
+
+##
+#  Play a game of tic-tac-toe where players draw.
+#
+test_draw() {
+	### tests here  for drawn game
+    declare -a tttBoard			# the ttt board
+	
+	# initialize the board
+	initBoard tttBoard
+	sol=( 1 2 3 4 5 6 7 8 9)
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O first move to position 8
+	markBoard O 8 tttBoard
+	sol=( X 2 3 4 5 6 7 O 9 )
+	assertArrayEqual tttBoard sol
+
+	# X second move to position 2
+	markBoard X 2 tttBoard
+	sol=( X X 3 4 5 6 7 O 9 )
+	assertArrayEqual tttBoard sol
+
+	# O second move to position 3
+	markBoard O 3 tttBoard
+	sol=( X X O 4 5 6 7 O 9 )
+	assertArrayEqual tttBoard sol
+
+	# X third move to position 6
+	markBoard X 6 tttBoard
+	sol=( X X O 4 5 X 7 O 9 )
+	assertArrayEqual tttBoard sol
+
+	# O third move to position 4
+	markBoard O 4 tttBoard
+	sol=( X X O O 5 X 7 O 9 )
+	assertArrayEqual tttBoard sol
+
+	# X fourth move to position 7
+	markBoard X 7 tttBoard
+	sol=( X X O O 5 X X O 9 )
+	assertArrayEqual tttBoard sol
+
+	# O fourth move to position 5
+	markBoard O 5 tttBoard
+	sol=( X X O O O X X O 9 )
+	assertArrayEqual tttBoard sol
+
+	# X fifth move to position 9
+	markBoard X 9 tttBoard
+	sol=( X X O O O X X O X )
+	assertArrayEqual tttBoard sol
+    
+    # X has not won
+    hasWon X tttBoard
+    assertStatusFailure
+
+    # O has not won
+    hasWon O tttBoard
+    assertStatusFailure
+}
+
+##
+#  Test error conditions when marking
+#  and testing board.
+#
+test_errors() {
+    declare -a tttBoard	
+	# initialize the board
+	initBoard tttBoard
+	sol=( 1 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+	
+	# X first move to position 10
+	#should be failed, beacuse 10 is out of range
+	markBoard X 10 tttBoard
+	sol=( 1 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X first move to position 0
+	#should be failed, beacuse 0 is out of range
+	markBoard X 0 tttBoard
+	sol=( 1 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X first move to position 1
+	markBoard X 1 tttBoard
+	sol=( X 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O first move to position 1
+	markBoard O 1 tttBoard
+	#should be failed, beacuse this position has already be X
+	sol=( X 2 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O first move to position 2
+	markBoard O 2 tttBoard
+	sol=( X O 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X second move to position 2
+	markBoard X 2 tttBoard
+	#should be failed, beacuse this position has already be O
+	sol=( X O 3 4 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X second move to position 4
+	markBoard X 4 tttBoard
+	sol=( X O 3 X 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# O second move to position 3
+	markBoard O 3 tttBoard
+	sol=( X O O X 5 6 7 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X third move to position 7
+	markBoard X 7 tttBoard
+	sol=( X O O X 5 6 X 8 9 )
+	assertArrayEqual tttBoard sol
+
+	# X won
+	hasWon X tttBoard
+	assertStatusSuccess
+
+    # O has not won
+	hasWon O tttBoard
+	assertStatusFailure
+
+}
+
+# run unit tests for X win, O win, and draw
+runUnitTest test_X_win
+runUnitTest test_O_win
+runUnitTest test_draw
+runUnitTest test_errors
+
+# show unit test summary
+unitTestSummary
