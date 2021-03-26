@@ -1,0 +1,220 @@
+#!/bin/bash
+
+# @file ttt_s_test
+#
+# Tic-Tac-Toe (Naughts and Crosses)
+# Tests the string representation of the board
+#
+# Markers: X: x marker, O: o marker, _: no marker
+#
+# @date Sept 1, 2020
+# @author philip gust
+#
+
+# read ttt board definitions
+dir=$(dirname "$0")
+source "$dir/ttt_board_s"
+source "$dir/unit_test"
+
+
+##
+#  Play a game of tic-tac-toe where player X wins.
+#
+test_X_win() {
+	# initialize the board
+	local tttBoard=$(initBoard)
+	assertStringEqual "$tttBoard" "123456789"
+	
+	# X first move to position 1
+	tttBoard="$(markBoard X 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X23456789"
+
+	# O first move to position 9
+	tttBoard="$(markBoard O 9 $tttBoard)"
+	assertStringEqual "$tttBoard" "X2345678O"
+
+	### Additional tests here  for X winning game
+	# X second move to position 2
+	tttBoard="$(markBoard X 2 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX345678O"
+	# O second move to position 5
+	tttBoard="$(markBoard O 5 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34O678O"
+	# X third move to position 3
+	tttBoard="$(markBoard X 3 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXX4O678O"
+
+	# X has won
+	hasWon X "$tttBoard"
+	assertStatusSuccess
+
+	# O has not won
+	hasWon O "$tttBoard"
+	assertStatusFailure
+}
+
+
+##
+#  Play a game of tic-tac-toe where player O wins.
+#
+test_O_win() {
+	### tests here  for O winning game
+    # initialize the board
+	local tttBoard=$(initBoard)
+	assertStringEqual "$tttBoard" "123456789"
+	
+	# X first move to position 1
+	tttBoard="$(markBoard X 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X23456789"
+
+	# O first move to position 9
+	tttBoard="$(markBoard O 9 $tttBoard)"
+	assertStringEqual "$tttBoard" "X2345678O"
+
+	# X second move to position 2
+	tttBoard="$(markBoard X 2 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX345678O"
+	
+	# O second move to position 8
+	tttBoard="$(markBoard O 8 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34567OO"
+	
+	# X third move to position 5
+	tttBoard="$(markBoard X 5 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34X67OO"
+
+	# O third move to position 7
+	tttBoard="$(markBoard O 7 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34X6OOO"
+
+	# X has not won
+	hasWon X "$tttBoard"
+	assertStatusFailure
+
+	# O has won
+	hasWon O "$tttBoard"
+	assertStatusSuccess
+}
+
+##
+#  Play a game of tic-tac-toe where players draw.
+#
+test_draw() {
+	### tests here  for drawn game
+    # initialize the board
+	local tttBoard=$(initBoard)
+	assertStringEqual "$tttBoard" "123456789"
+	
+	# X first move to position 1
+	tttBoard="$(markBoard X 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X23456789"
+
+	# O first move to position 8
+	tttBoard="$(markBoard O 8 $tttBoard)"
+	assertStringEqual "$tttBoard" "X234567O9"
+
+	# X second move to position 2
+	tttBoard="$(markBoard X 2 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34567O9"
+
+	# O second move to position 3
+	tttBoard="$(markBoard O 3 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXO4567O9"
+
+	# X third move to position 6
+	tttBoard="$(markBoard X 6 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXO45X7O9"
+
+	# O third move to position 4
+	tttBoard="$(markBoard O 4 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXOO5X7O9"
+
+	# X fourth move to position 7
+	tttBoard="$(markBoard X 7 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXOO5XXO9"
+
+	# O fourth move to position 5
+	tttBoard="$(markBoard O 5 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXOOOXXO9"
+
+	# X fifth move to position 9
+	tttBoard="$(markBoard X 9 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXOOOXXOX"
+
+	# X has not won
+	hasWon X "$tttBoard"
+	assertStatusFailure
+
+	# O has not won
+	hasWon O "$tttBoard"
+	assertStatusFailure
+}
+
+##
+#  Test error conditions when marking
+#  and testing board.
+#
+test_errors() {
+	# initialize the board
+	local tttBoard=$(initBoard)
+	assertStringEqual "$tttBoard" "123456789"
+	
+	# X first move to position 10
+	#should be failed, beacuse 10 is out of range
+	tttBoard="$(markBoard X 10 $tttBoard)"
+	assertStringEqual "$tttBoard" "123456789"
+
+	# X first move to position 0
+	#should be failed, beacuse 0 is out of range
+	tttBoard="$(markBoard X 0 $tttBoard)"
+	assertStringEqual "$tttBoard" "123456789"
+
+	# X first move to position 1
+	tttBoard="$(markBoard X 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X23456789"
+
+	# O first move to position 1
+	#should be failed, beacuse this position has already be X
+	tttBoard="$(markBoard O 1 $tttBoard)"
+	assertStringEqual "$tttBoard" "X23456789"
+
+	# O first move to position 8
+	tttBoard="$(markBoard O 8 $tttBoard)"
+	assertStringEqual "$tttBoard" "X234567O9"
+
+	# X second move to position 8
+	#should be failed, beacuse this position has already be O
+	tttBoard="$(markBoard X 8 $tttBoard)"
+	assertStringEqual "$tttBoard" "X234567O9"
+
+	# X second move to position 2
+	tttBoard="$(markBoard X 2 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX34567O9"
+
+	# O second move to position 7
+	tttBoard="$(markBoard O 7 $tttBoard)"
+	assertStringEqual "$tttBoard" "XX3456OO9"
+
+	# X third move to position 3
+	tttBoard="$(markBoard X 3 $tttBoard)"
+	assertStringEqual "$tttBoard" "XXX456OO9"
+
+	# X has won
+	hasWon X "$tttBoard"
+	assertStatusSuccess
+
+	# O has not won
+	hasWon O "$tttBoard"
+	assertStatusFailure
+     
+
+}
+
+# run unit tests for X win, O win, and draw
+runUnitTest test_X_win
+runUnitTest test_O_win
+runUnitTest test_draw
+runUnitTest test_errors
+
+# show unit test summary
+unitTestSummary
