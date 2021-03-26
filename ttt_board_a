@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# @file ttt_board_a
+#
+# Defines board functions for tic-tac-toe (naughts and crosses)
+# This implementation uses an array to represent the board
+#
+# @date Sept 1, 2020
+# @author philip gust
+#
+
+##
+#  Initialize empty board.
+#
+#  @param board reference to the board
+#
+
+initBoard() {
+	declare -n reference=$1
+    #initiate board with 123456789
+    reference=(1 2 3 4 5 6 7 8 9)
+}
+
+
+##
+#  Mark the board position with the marker of a player (X or O).
+#
+#  @param marker the marker for a player (X or O)
+#  @param bpos the row major position on the board (1-9)
+#  @param reference to the board
+#  @return 0 if board position marked, 1 if cannot mark position
+#
+markBoard() {
+    declare marker=$1
+    declare -i bpos=$2
+    declare -n reference=$3
+    declare bposs=$((bpos-1))
+    #if input is larger than 9 or small than 1, echo invalid positon
+    if ((bpos > 9)) || ((bpos < 1)); then
+        echo "Warning: Out of range! Please try number from 1 to 9"
+        return 1
+    elif [ ${reference[$bposs]} == "X" ] || [ ${reference[$bposs]} == "O" ] ; then
+        echo "Warning: This position has already been marked! Please try other positon"
+        return 1
+    fi
+    reference[$bposs]="$marker"
+    return 0
+}
+
+##
+#  Determines whether given marker has won. Only if
+#  marker has three columns in row or three rows in
+#  column, or all in one of the two diagonals.
+#
+#  @param marker the X or O marker
+#  @param reference to the board
+#  @return 0 if marker has won, 1 otherwise.
+#
+hasWon() {
+    declare marker=$1
+    declare -n reference=$2
+    #if markers on any row or column or diagonal are same, then win.
+    if [ ${reference[0]} == $marker ] && [ ${reference[1]} == $marker ] && [ ${reference[2]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[3]} == $marker ] && [ ${reference[4]} == $marker ] && [ ${reference[5]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[6]} == $marker ] && [ ${reference[7]} == $marker ] && [ ${reference[8]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[0]} == $marker ] && [ ${reference[3]} == $marker ] && [ ${reference[6]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[1]} == $marker ] && [ ${reference[4]} == $marker ] && [ ${reference[7]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[2]} == $marker ] && [ ${reference[5]} == $marker ] && [ ${reference[8]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[0]} == $marker ] && [ ${reference[4]} == $marker ] && [ ${reference[8]} == $marker ]; then
+        return 0
+        echo success
+    elif [ ${reference[2]} == $marker ] && [ ${reference[4]} == $marker ] && [ ${reference[6]} == $marker ]; then
+        return 0
+        echo success   
+    else
+        return 1
+        echo fail
+    fi
+}
+
+##
+#  Display the board.
+#
+#  @param reference to the board
+#
+displayBoard() {
+	declare -n reference=$1
+    #draw first line
+    echo "+---+---+---+"
+    #i refer to 3 rows
+    for i in {0,1,2}; do
+        #print |1 |2 |3, |4 |5 |6, |7 |8 |9 for each row
+        for j in {0,1,2}; do
+            echo -n "| ${reference[*]:$i*3+$j:1} ";
+        done
+        #add | for each row
+        echo -n "|"
+        echo
+        echo "+---+---+---+"
+    done      
+}
