@@ -1,0 +1,117 @@
+#!/bin/bash
+
+# @file ttt_board_s
+#
+# Defines board and functions for tic-tac-toe (naughts and crosses)
+# This implementation uses a string to represent the board
+#
+# @date Sept 1, 2020
+# @author philip gust
+#
+
+##
+#  Initialize empty board.
+#
+#  @return 0 and outputs the empty board to stdout
+#
+initBoard() {
+	### your code here
+    declare board=$1
+    #initiate board with 123456789
+    board="123456789"
+    echo $board
+}
+
+##
+#  mark the board position with the marker of a player (X or O).
+#  
+#  @param marker the marker for a player (X or O)
+#  @param boardPos the row major position on the board (1-9)
+#  @param board the board
+#  @return 0 and outputs new board to stdout if board position 
+#    marked, 1 and outputs original board to stdout if invalid 
+#    marker or position
+#
+markBoard() {
+    declare marker=$1
+    declare -i boardPos=$2
+    declare board=$3
+    declare boardp=$((boardPos-1))
+    #if input is larger than 9 or small than 1, echo invalid positon
+    if ((boardPos > 9)) || ((boardPos < 1)); then
+        echo $board
+        return 1
+    elif [ "${board:$boardPos-1:1}" == "X" ] || [ "${board:$boardPos-1:1}" == "O" ] ; then
+        echo $board
+        return 1
+    fi
+    board="${board: 0: ${boardp}}${marker}${board:${boardPos}}"
+    echo $board
+    return 0
+}
+
+##
+#  Determines whether given marker has won. Only if
+#  marker has three columns in row or three rows in
+#  column, or all in one of the two diagonals.
+#
+#  @param marker the X or O marker
+#  @param board the board
+#  @return 0 if marker has won, 1 otherwise.
+#
+hasWon() {
+	### your code here
+    declare marker=$1
+    declare board=$2
+    #if markers on any row or column or diagonal are same, then win.
+    if [ ${board:0:1} = $marker ] && [ ${board:1:1} = $marker ] && [ ${board:2:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:3:1} = $marker ] && [ ${board:4:1} = $marker ] && [ ${board:5:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:6:1} = $marker ] && [ ${board:7:1} = $marker ] && [ ${board:8:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:0:1} = $marker ] && [ ${board:3:1} = $marker ] && [ ${board:6:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:1:1} = $marker ] && [ ${board:4:1} = $marker ] && [ ${board:7:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:2:1} = $marker ] && [ ${board:5:1} = $marker ] && [ ${board:8:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:0:1} = $marker ] && [ ${board:4:1} = $marker ] && [ ${board:8:1} = $marker ]; then
+        return 0
+        echo success
+    elif [ ${board:2:1} = $marker ] && [ ${board:4:1} = $marker ] && [ ${board:6:1} = $marker ]; then
+        return 0
+        echo success  
+    else
+      return 1 
+      echo fail
+    fi
+}
+
+##
+#  Display the board.
+#
+#  @param board the board
+#
+displayBoard() {
+    declare board=$1
+    #draw first line
+    echo "+---+---+---+"
+    #i refer to 3 rows
+    for i in {0,1,2}; do
+        #print |1 |2 |3, |4 |5 |6, |7 |8 |9 for each row
+        for j in {0,1,2}; do
+            echo -n "| ${board:$i*3+$j:1} ";
+        done
+        #add | for each row
+        echo -n "|"
+        echo
+        echo "+---+---+---+"
+    done
+}
